@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Matemática - 3º Ano Fundamental</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        math: {
+                            blue: '#1e40af',
+                            lightblue: '#eff6ff',
+                            indigo: '#3730a3',
+                            purple: '#6b21a8',
+                            amber: '#d97706',
+                            emerald: '#059669',
+                            rose: '#e11d48'
+                        }
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f4f8;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px), radial-gradient(#cbd5e1 1.5px, #f0f4f8 1.5px);
+            background-size: 50px 50px;
+            background-position: 0 0, 25px 25px;
+        }
+        h1, h2, h3, h4, .font-title {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #93c5fd;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+        .option-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        @keyframes pulse-light {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .pulse-btn {
+            animation: pulse-light 2s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-800 flex flex-col justify-between">
+
+    <!-- Header / Navbar -->
+    <header class="bg-math-indigo text-white shadow-lg border-b-4 border-math-blue sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white p-2 rounded-full text-math-indigo shadow-md">
+                    <i class="fa-solid fa-shapes text-2xl md:text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wide">Quiz de Matemática</h1>
+                    <p class="text-xs md:text-sm text-indigo-100 font-medium">Revisão: Prismas & Medidas de Massa — 3º Ano</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2 bg-indigo-950/50 px-3 py-1.5 rounded-xl border border-indigo-300/30">
+                <i class="fa-solid fa-calculator text-amber-300"></i>
+                <span id="progress-text" class="text-xs md:text-sm font-bold">Respondidas: 0/20</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
+        
+        <!-- START / WELCOME SCREEN -->
+        <div id="start-screen" class="bg-white rounded-3xl p-6 md:p-10 shadow-xl border-2 border-indigo-200 text-center max-w-2xl mx-auto my-8">
+            <div class="w-24 h-24 bg-indigo-100 text-math-indigo rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <i class="fa-solid fa-cube text-5xl"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-math-indigo mb-4">Pronto para a Prova de Matemática?</h2>
+            <p class="text-gray-600 mb-6 text-base md:text-lg leading-relaxed">
+                Este quiz contém <strong>20 questões objetivas</strong> desenvolvidas rigorosamente com base nas páginas do caderno de estudos! 
+                As alternativas estão bem distribuídas para ajudar você na fixação total.
+            </p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left mb-8">
+                <div class="bg-blue-50 p-3.5 rounded-2xl flex items-center space-x-3 border border-blue-200">
+                    <i class="fa-solid fa-cubes text-math-blue text-2xl"></i>
+                    <div>
+                        <span class="text-sm font-bold text-gray-800 block">Prismas e Geometria</span>
+                        <span class="text-xs text-gray-500">Bases, faces, vértices e arestas</span>
+                    </div>
+                </div>
+                <div class="bg-purple-50 p-3.5 rounded-2xl flex items-center space-x-3 border border-purple-200">
+                    <i class="fa-solid fa-draw-polygon text-purple-600 text-2xl"></i>
+                    <div>
+                        <span class="text-sm font-bold text-gray-800 block">Planificação de Prismas</span>
+                        <span class="text-xs text-gray-500">Formatos das bases e montagem</span>
+                    </div>
+                </div>
+                <div class="bg-amber-50 p-3.5 rounded-2xl flex items-center space-x-3 border border-amber-200">
+                    <i class="fa-solid fa-weight-hanging text-amber-600 text-2xl"></i>
+                    <div>
+                        <span class="text-sm font-bold text-gray-800 block">Unidades de Massa</span>
+                        <span class="text-xs text-gray-500">Quilograma (kg) e Grama (g)</span>
+                    </div>
+                </div>
+                <div class="bg-emerald-50 p-3.5 rounded-2xl flex items-center space-x-3 border border-emerald-200">
+                    <i class="fa-solid fa-scale-balanced text-emerald-600 text-2xl"></i>
+                    <div>
+                        <span class="text-sm font-bold text-gray-800 block">Conversões e Balanças</span>
+                        <span class="text-xs text-gray-500">Problemas práticos do dia a dia</span>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full sm:w-auto bg-math-indigo hover:bg-indigo-900 text-white font-title text-xl py-4 px-10 rounded-2xl shadow-lg hover:shadow-xl transition duration-200 pulse-btn">
+                <i class="fa-solid fa-play mr-2"></i> Começar a Revisão Agora!
+            </button>
+        </div>
+
+        <!-- QUIZ CONTAINER (Hidden initially) -->
+        <div id="quiz-container" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
+            <!-- Left Side: Question Navigation Grid (1-20) -->
+            <div class="lg:col-span-1 bg-white rounded-2xl p-4 shadow-md border border-gray-200 flex flex-col h-fit">
+                <h3 class="font-title text-lg font-bold text-math-indigo mb-3 flex items-center justify-between">
+                    <span><i class="fa-solid fa-list-ol mr-2"></i>Questões</span>
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">1 a 20</span>
+                </h3>
+                
+                <!-- Status Legend -->
+                <div class="grid grid-cols-3 gap-1 mb-4 text-[11px] font-semibold text-center border-b pb-3 border-gray-100">
+                    <div class="flex items-center justify-center space-x-1">
+                        <span class="w-3 h-3 bg-gray-200 rounded-full inline-block"></span>
+                        <span class="text-gray-500">Aberta</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-1">
+                        <span class="w-3 h-3 bg-emerald-500 rounded-full inline-block"></span>
+                        <span class="text-emerald-700">Certa</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-1">
+                        <span class="w-3 h-3 bg-rose-500 rounded-full inline-block"></span>
+                        <span class="text-rose-700">Errada</span>
+                    </div>
+                </div>
+
+                <!-- 20 Buttons Grid -->
+                <div id="questions-grid" class="grid grid-cols-5 gap-2 max-h-[300px] lg:max-h-none overflow-y-auto custom-scrollbar p-1">
+                    <!-- Javascript generated buttons -->
+                </div>
+
+                <!-- Finalize Quiz Button (Enabled when all answered) -->
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <button id="btn-finish" onclick="showResults()" disabled class="w-full bg-gray-300 text-gray-500 cursor-not-allowed font-title py-3 px-4 rounded-xl shadow transition duration-200 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-flag-checkered"></i>
+                        <span>Finalizar Quiz</span>
+                    </button>
+                    <p id="finish-msg" class="text-xs text-center text-gray-400 mt-2">Responda todas as 20 perguntas para liberar a nota final.</p>
+                </div>
+            </div>
+
+            <!-- Right Side: Active Question Display -->
+            <div class="lg:col-span-3 bg-white rounded-2xl p-5 md:p-8 shadow-md border border-gray-200 flex flex-col justify-between">
+                <div>
+                    <!-- Question Header Info -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                        <span id="topic-badge" class="bg-indigo-50 text-math-indigo font-bold text-xs uppercase px-3 py-1 rounded-full border border-indigo-200">
+                            Tópico
+                        </span>
+                        <span id="q-counter" class="text-sm font-bold text-gray-400">
+                            Questão 1 de 20
+                        </span>
+                    </div>
+
+                    <!-- Question Title -->
+                    <h2 id="question-text" class="text-lg md:text-xl font-bold text-gray-800 mb-6 leading-snug">
+                        <!-- Text injected via JS -->
+                    </h2>
+
+                    <!-- Options List (A, B, C, D, E) -->
+                    <div id="options-container" class="space-y-3 mb-6">
+                        <!-- Options injected via JS -->
+                    </div>
+
+                    <!-- Feedback Box (Shown after confirmation) -->
+                    <div id="feedback-box" class="hidden p-4 rounded-2xl mb-6 border-2 transition-all">
+                        <div class="flex items-start space-x-3">
+                            <div id="feedback-icon" class="text-2xl mt-0.5"></div>
+                            <div>
+                                <h4 id="feedback-title" class="font-title text-lg font-bold"></h4>
+                                <p id="feedback-text" class="text-sm md:text-base mt-1 text-gray-700 leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Navigation Buttons -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-gray-100">
+                    <button id="btn-prev" onclick="prevQuestion()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 px-5 rounded-xl text-sm transition flex items-center">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> Anterior
+                    </button>
+
+                    <button id="btn-confirm" onclick="confirmAnswer()" disabled class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-title font-bold py-2.5 px-7 rounded-xl shadow-md transition disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center">
+                        <i class="fa-solid fa-check mr-2"></i> Confirmar Resposta
+                    </button>
+
+                    <button id="btn-next" onclick="nextQuestion()" class="bg-math-indigo hover:bg-indigo-900 text-white font-bold py-2.5 px-5 rounded-xl text-sm transition flex items-center">
+                        Próxima <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN (Hidden initially) -->
+        <div id="results-screen" class="hidden bg-white rounded-3xl p-6 md:p-10 shadow-xl border-2 border-indigo-200 max-w-3xl mx-auto my-6">
+            <div class="text-center mb-8">
+                <div id="score-badge-icon" class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-md">
+                    <!-- Icon JS -->
+                </div>
+                <h2 class="text-3xl font-bold font-title text-gray-800">Resultado da Prova</h2>
+                <p id="grade-subtitle" class="text-gray-600 font-medium mt-1"></p>
+            </div>
+
+            <!-- Score Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 text-center">
+                <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-2xl">
+                    <p class="text-xs text-indigo-700 uppercase font-bold">Nota Final</p>
+                    <p id="res-grade" class="text-3xl font-extrabold text-math-indigo font-title mt-1">0.0</p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl">
+                    <p class="text-xs text-emerald-700 uppercase font-bold">Acertos</p>
+                    <p id="res-correct" class="text-3xl font-extrabold text-emerald-600 font-title mt-1">0</p>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 p-4 rounded-2xl">
+                    <p class="text-xs text-rose-700 uppercase font-bold">Erros</p>
+                    <p id="res-incorrect" class="text-3xl font-extrabold text-rose-500 font-title mt-1">0</p>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 p-4 rounded-2xl">
+                    <p class="text-xs text-purple-700 uppercase font-bold">Aproveitamento</p>
+                    <p id="res-percent" class="text-3xl font-extrabold text-purple-600 font-title mt-1">0%</p>
+                </div>
+            </div>
+
+            <!-- Diagnostic Review Section -->
+            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5 mb-8">
+                <h3 class="font-title text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-chart-line text-math-indigo mr-2"></i> Análise por Assunto
+                </h3>
+                <p class="text-xs text-gray-500 mb-4">Veja o desempenho do seu filho por assunto para saber onde reforçar a revisão antes da prova:</p>
+
+                <div id="topic-analysis-container" class="space-y-4">
+                    <!-- JS generated analysis bars -->
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="restartQuiz()" class="bg-math-indigo hover:bg-indigo-900 text-white font-title text-lg py-3.5 px-8 rounded-2xl shadow-lg transition flex items-center justify-center">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Refazer o Quiz
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500">
+        <p>Quiz de Matemática — Revisão de Prismas e Medidas de Massa (3º Ano E.F.)</p>
+    </footer>
+
+    <!-- JavaScript Game Logic -->
+    <script>
+        // QUESTION BANK (20 Questions strictly derived from the 4 workbook pages)
+        // Correct options are uniformly distributed across A(0), B(1), C(2), D(3), E(4).
+        const rawQuestions = [
+            // TOPIC 1: PRISMAS E SUAS CARACTERÍSTICAS (Questions 1 to 6)
+            {
+                topic: "Prismas e Geometria",
+                question: "1. Quantas BASES possui todo e qualquer prisma?",
+                options: [
+                    "Possui apenas 1 base.",
+                    "Possui exatamente 2 bases paralelas e iguais.",
+                    "Possui 3 bases em formatos diferentes.",
+                    "Possui 4 bases retangulares.",
+                    "Não possui nenhuma base."
+                ],
+                answer: 1, // B
+                justification: "Como consta na regra geral do caderno: todo prisma possui sempre 2 bases congruentes (iguais) e paralelas."
+            },
+            {
+                topic: "Prismas e Geometria",
+                question: "2. Qual é o formato das FACES LATERAIS de qualquer prisma?",
+                options: [
+                    "Sempre circulares.",
+                    "Sempre em formato de triângulos.",
+                    "Sempre retangulares.",
+                    "Sempre em formato de hexágonos.",
+                    "Variam conforme o número de lados da base."
+                ],
+                answer: 2, // C
+                justification: "Conforme o destaque do caderno: 'Os prismas têm sempre 2 bases e as suas FACES LATERAIS SÃO RETANGULARES'."
+            },
+            {
+                topic: "Prismas e Geometria",
+                question: "3. Um prisma de BASE TRIANGULAR possui quantas bases, faces laterais, vértices e arestas, respectivamente?",
+                options: [
+                    "2 bases, 3 faces laterais, 6 vértices e 9 arestas.",
+                    "1 base, 3 faces laterais, 3 vértices e 6 arestas.",
+                    "2 bases, 4 faces laterais, 8 vértices e 12 arestas.",
+                    "2 bases, 5 faces laterais, 10 vértices e 15 arestas.",
+                    "3 bases, 3 faces laterais, 9 vértices e 6 arestas."
+                ],
+                answer: 0, // A
+                justification: "No prisma de base triangular (triângulo tem 3 lados): 2 bases, 3 faces conexas (laterais), 6 vértices (pontas) e 9 arestas (linhas)."
+            },
+            {
+                topic: "Prismas e Geometria",
+                question: "4. Qual é o polígono que forma as bases de um prisma que possui 8 vértices e 12 arestas no total?",
+                options: [
+                    "Triângulo (3 lados).",
+                    "Pentágono (5 lados).",
+                    "Hexágono (6 lados).",
+                    "Quadrado / Quadrilátero (4 lados).",
+                    "Círculo."
+                ],
+                answer: 3, // D
+                justification: "Trata-se do prisma de base quadrada (ou cubo/paralelepípedo). Suas bases são quadriláteros (4 lados), resultando em 4 faces laterais, 2 bases, 8 vértices e 12 arestas."
+            },
+            {
+                topic: "Prismas e Geometria",
+                question: "5. Se um prisma possui bases no formato de PENTÁGONO (5 lados), quantas FACES LATERAIS ele possui ao todo?",
+                options: [
+                    "3 faces laterais.",
+                    "10 faces laterais.",
+                    "5 faces laterais.",
+                    "7 faces laterais.",
+                    "2 faces laterais."
+                ],
+                answer: 2, // C
+                justification: "A quantidade de faces laterais de um prisma é sempre igual ao número de lados do polígono de sua base. Se a base é um pentágono (5 lados), ele tem 5 faces terangulares laterais."
+            },
+            {
+                topic: "Prismas e Geometria",
+                question: "6. Analisando um PRISMA DE BASE HEXAGONAL (base de 6 lados), marque a alternativa correta sobre a quantidade de suas faces no total, vértices e arestas:",
+                options: [
+                    "Possui 6 faces ao todo, 12 vértices e 18 arestas.",
+                    "Possui 8 faces ao todo, 12 vértices e 18 arestas.",
+                    "Possui 8 faces ao todo, 6 vértices e 12 arestas.",
+                    "Possui 12 faces ao todo, 8 vértices e 18 arestas.",
+                    "Possui 7 faces ao todo, 10 vértices e 15 arestas."
+                ],
+                answer: 1, // B
+                justification: "Base Hexagonal (6 lados): tem 2 bases + 6 faces laterais = 8 faces no total. Vértices: 6 x 2 = 12. Arestas: 6 + 6 + 6 = 18 arestas."
+            },
+
+            // TOPIC 2: PLANIFICAÇÃO E RECONHECIMENTO DE PRISMAS (Questions 7 to 10)
+            {
+                topic: "Planificação de Prismas",
+                question: "7. Ao montar a planificação de um prisma de base pentagonal, quais figuras geométricas devem estar presentes no desenho?",
+                options: [
+                    "5 pentágonos e 2 retângulos.",
+                    "2 triângulos e 5 retângulos.",
+                    "1 pentágono e 5 triângulos.",
+                    "2 pentágonos e 5 retângulos.",
+                    "2 hexágonos e 6 retângulos."
+                ],
+                answer: 3, // D
+                justification: "A planificação do prisma de base pentagonal exige 2 pentágonos (as 2 bases) e 5 retângulos (as 5 faces laterais)."
+            },
+            {
+                topic: "Planificação de Prismas",
+                question: "8. Observe os pares de bases. Qual nome do prisma cujas duas bases têm 6 lados cada uma?",
+                options: [
+                    "Prisma de base retangular.",
+                    "Prisma de base pentagonal.",
+                    "Prisma de base hexagonal.",
+                    "Prisma de base triangular.",
+                    "Prisma de base octogonal."
+                ],
+                answer: 2, // C
+                justification: "Um polígono de 6 lados chama-se hexágono. Portanto, o prisma com bases de 6 lados é o prisma de base hexagonal."
+            },
+            {
+                topic: "Planificação de Prismas",
+                question: "9. Duas bases de um mesmo prisma podem ter formatos ou tamanhos diferentes entre si?",
+                options: [
+                    "Sim, uma base pode ser um triângulo e a outra um quadrado.",
+                    "Sim, uma base pode ser maior que a outra para encaixar.",
+                    "Não, as duas bases de um prisma têm sempre o mesmo formato e o mesmo tamanho.",
+                    "Não, pois os prismas só têm 1 base.",
+                    "Sim, depende se o prisma está em pé ou deitado."
+                ],
+                answer: 2, // C
+                justification: "Item (b) da questão 4 do caderno: 'As duas bases de um prisma têm o mesmo FORMATO (e mesmo tamanho)'."
+            },
+            {
+                topic: "Planificação de Prismas",
+                question: "10. Se contarmos as faces de um prisma retangular (ou paralelepípedo) montado, qual é o total de FACES (somando bases e laterais)?",
+                options: [
+                    "4 faces ao todo.",
+                    "5 faces ao todo.",
+                    "8 faces ao todo.",
+                    "12 faces ao todo.",
+                    "6 faces ao todo."
+                ],
+                answer: 4, // E
+                justification: "Um prisma de base quadrangular/retangular tem 2 bases + 4 faces laterais = 6 faces no total (assim como um dado/cubo)."
+            },
+
+            // TOPIC 3: UNIDADES DE MEDIDA DE MASSA (Questions 11 to 15)
+            {
+                topic: "Unidades de Medida de Massa",
+                question: "11. De acordo com o caderno, 1 QUILOGRAMA (1 kg) equivale a quantos GRAMAS (g)?",
+                options: [
+                    "10 gramas.",
+                    "100 gramas.",
+                    "1 000 gramas.",
+                    "10 000 gramas.",
+                    "500 gramas."
+                ],
+                answer: 2, // C
+                justification: "A regra padronizada de medida de massa estabelece que: 1 quilograma (kg) = 1 000 gramas (g)."
+            },
+            {
+                topic: "Unidades de Medida de Massa",
+                question: "12. E quanto vale 1 GRAMA (1 g) quando convertido para MILIGRAMAS (mg)?",
+                options: [
+                    "10 mg.",
+                    "100 mg.",
+                    "500 mg.",
+                    "1 000 mg.",
+                    "10 000 mg."
+                ],
+                answer: 3, // D
+                justification: "Assim como do kg para o g, a relação entre grama e miligrama é: 1 grama (g) = 1 000 miligramas (mg)."
+            },
+            {
+                topic: "Unidades de Medida de Massa",
+                question: "13. Quantos gramas (g) há em uma embalagem com 2 kg (quilogramas) de arroz?",
+                options: [
+                    "200 gramas.",
+                    "2 000 gramas.",
+                    "20 000 gramas.",
+                    "200 000 gramas.",
+                    "500 gramas."
+                ],
+                answer: 1, // B
+                justification: "Se 1 kg = 1 000 g, então 2 kg correspondem a 2 x 1 000 = 2 000 gramas."
+            },
+            {
+                topic: "Unidades de Medida de Massa",
+                question: "14. A conversão de 500 g para miligramas (mg) resulta em qual valor?",
+                options: [
+                    "5 000 mg.",
+                    "50 000 mg.",
+                    "500 000 mg.",
+                    "5 000 000 mg.",
+                    "50 mg."
+                ],
+                answer: 2, // C
+                justification: "Multiplica-se por 1 000: $500 \text{ g} \times 1 000 = 500 000 \text{ mg}$ (quinhentos mil miligramas), exatamente como respondido no caderno."
+            },
+            {
+                topic: "Unidades de Medida de Massa",
+                question: "15. Se um pacote de ração pesa 1 500 g, quantos quilogramas (kg) isso representa na forma decimal?",
+                options: [
+                    "15 kg.",
+                    "1,5 kg.",
+                    "150 kg.",
+                    "0,15 kg.",
+                    "105 kg."
+                ],
+                answer: 1, // B
+                justification: "Como 1 000 g = 1 kg e 500 g = 0,5 kg, temos $1 500 \text{ g} = 1,5 \text{ kg}$ (um quilograma e meio)."
+            },
+
+            // TOPIC 4: PROBLEMAS E SITUAÇÕES DO DIA A DIA COM MASSA (Questions 16 to 20)
+            {
+                topic: "Problemas Práticos com Massa",
+                question: "16. Quantos pacotes de milho para pipoca de 500 g são necessários para completar exatamente 1 quilograma (1 kg)?",
+                options: [
+                    "1 pacote.",
+                    "2 pacotes.",
+                    "3 pacotes.",
+                    "4 pacotes.",
+                    "5 pacotes."
+                ],
+                answer: 1, // B
+                justification: "1 kg = 1 000 g. Somando $500 \text{ g} + 500 \text{ g} = 1 000 \text{ g}$. Portanto, são necessários 2 pacotes."
+            },
+            {
+                topic: "Problemas Práticos com Massa",
+                question: "17. Uma caixa de leite em pó pesa 400 g. Quantas caixas dessas são necessárias para formar 2 quilogramas (2 kg)?",
+                options: [
+                    "2 caixas.",
+                    "4 caixas.",
+                    "10 caixas.",
+                    "5 caixas.",
+                    "8 caixas."
+                ],
+                answer: 3, // D
+                justification: "2 kg = 2 000 g. Somando 5 caixas de 400 g: $400 + 400 + 400 + 400 + 400 = 2 000 \text{ g}$ (2 kg). São necessárias 5 caixas!"
+            },
+            {
+                topic: "Problemas Práticos com Massa",
+                question: "18. Na balança do aeroporto, uma mala verde indicou 10 kg. Ao colocar uma mala preta junto, a balança marcou 23 kg. Qual é a massa APENAS da mala preta?",
+                options: [
+                    "13 kg.",
+                    "33 kg.",
+                    "23 kg.",
+                    "10 kg.",
+                    "15 kg."
+                ],
+                answer: 0, // A
+                justification: "Subtraímos o valor acumulado do valor inicial: $23\text{ kg} - 10\text{ kg} = 13\text{ kg}$. A mala preta pesa 13 kg."
+            },
+            {
+                topic: "Problemas Práticos com Massa",
+                question: "19. Continuando a sequência da balança: com as duas malas (23 kg) mais uma terceira mala, o visor marcou 38 kg. Quanto pesa essa terceira mala?",
+                options: [
+                    "10 kg.",
+                    "12 kg.",
+                    "20 kg.",
+                    "15 kg.",
+                    "18 kg."
+                ],
+                answer: 3, // D
+                justification: "Subtrai-se a massa total acumulada da anterior: $38\text{ kg} - 23\text{ kg} = 15\text{ kg}$. Em gramas, 15 kg equivalem a 15 000 g!"
+            },
+            {
+                topic: "Problemas Práticos com Massa",
+                question: "20. Comparando os objetos do cotidiano, qual item é o MAIS PESADO em cada dupla?",
+                options: [
+                    "A maçã é mais pesada que a melancia; o videogame é mais pesado que a bicicleta.",
+                    "A melancia é mais pesada que a maçã; a bicicleta é mais pesada que o controle de videogame.",
+                    "A maçã é mais pesada que a melancia; a bicicleta é mais pesada que o controle de videogame.",
+                    "A melancia é mais pesada que a maçã; o controle de videogame é mais pesado que a bicicleta.",
+                    "Todos os quatro objetos possuem exatamente o mesmo peso."
+                ],
+                answer: 1, // B
+                justification: "Exercício 8 do caderno: Uma melancia inteira é mais pesada do que uma maçã, e uma bicicleta é bem mais pesada que um controle de videogame."
+            }
+        ];
+
+        let questions = [...rawQuestions];
+
+        // STATE VARIABLES
+        let currentQuestion = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let isConfirmed = new Array(questions.length).fill(false);
+
+        // INITIALIZATION
+        window.onload = function() {
+            renderQuestionsGrid();
+        };
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            loadQuestion(0);
+        }
+
+        // RENDER SIDEBAR QUESTIONS GRID (1 TO 20)
+        function renderQuestionsGrid() {
+            const grid = document.getElementById('questions-grid');
+            grid.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `grid-btn-${idx}`;
+                btn.onclick = () => jumpToQuestion(idx);
+                btn.className = `h-10 w-full rounded-xl font-title text-sm font-bold flex items-center justify-center transition border ${getGridBtnStyle(idx)}`;
+                btn.innerText = idx + 1;
+                grid.appendChild(btn);
+            });
+            updateProgressSummary();
+        }
+
+        function getGridBtnStyle(idx) {
+            if (idx === currentQuestion) {
+                if (isConfirmed[idx]) {
+                    const isCorrect = userAnswers[idx] === questions[idx].answer;
+                    return isCorrect ? "bg-emerald-500 text-white border-emerald-700 ring-2 ring-emerald-300" : "bg-rose-500 text-white border-rose-700 ring-2 ring-rose-300";
+                }
+                return "bg-amber-400 text-amber-950 border-amber-500 ring-2 ring-amber-300";
+            }
+
+            if (isConfirmed[idx]) {
+                const isCorrect = userAnswers[idx] === questions[idx].answer;
+                return isCorrect ? "bg-emerald-500 text-white border-emerald-600" : "bg-rose-500 text-white border-rose-600";
+            }
+
+            if (userAnswers[idx] !== null) {
+                return "bg-blue-100 text-blue-800 border-blue-300";
+            }
+
+            return "bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300";
+        }
+
+        // LOAD QUESTION DATA INTO MAIN VIEW
+        function loadQuestion(index) {
+            currentQuestion = index;
+            const q = questions[index];
+
+            // Counter & Badges
+            document.getElementById('q-counter').innerText = `Questão ${index + 1} de ${questions.length}`;
+            document.getElementById('topic-badge').innerText = q.topic;
+            document.getElementById('question-text').innerText = q.question;
+
+            // Options rendering
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+
+            q.options.forEach((opt, optIdx) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => selectOption(optIdx);
+                btn.disabled = isConfirmed[index];
+                btn.className = `option-btn w-full text-left p-3.5 md:p-4 rounded-2xl border-2 flex items-start space-x-3 transition ${getOptionStyle(index, optIdx)}`;
+
+                const letterBadge = document.createElement('span');
+                letterBadge.className = `w-7 h-7 rounded-full text-xs font-title font-bold flex items-center justify-center flex-shrink-0 mt-0.5 ${getLetterBadgeStyle(index, optIdx)}`;
+                letterBadge.innerText = letters[optIdx];
+
+                const textSpan = document.createElement('span');
+                textSpan.className = "text-sm md:text-base text-gray-800 font-medium leading-relaxed";
+                textSpan.innerText = opt;
+
+                btn.appendChild(letterBadge);
+                btn.appendChild(textSpan);
+                container.appendChild(btn);
+            });
+
+            // Feedback Box Handling
+            const feedbackBox = document.getElementById('feedback-box');
+            if (isConfirmed[index]) {
+                const isCorrect = userAnswers[index] === q.answer;
+                feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'bg-rose-50', 'border-rose-300');
+                
+                if (isCorrect) {
+                    feedbackBox.classList.add('bg-emerald-50', 'border-emerald-300');
+                    document.getElementById('feedback-icon').innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i>';
+                    document.getElementById('feedback-title').innerText = 'Muito bem! Resposta Correta!';
+                    document.getElementById('feedback-title').className = 'font-title text-lg font-bold text-emerald-800';
+                } else {
+                    feedbackBox.classList.add('bg-rose-50', 'border-rose-300');
+                    document.getElementById('feedback-icon').innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-600"></i>';
+                    document.getElementById('feedback-title').innerText = `Atenção! A resposta certa era a letra (${letters[q.answer]})`;
+                    document.getElementById('feedback-title').className = 'font-title text-lg font-bold text-rose-800';
+                }
+
+                document.getElementById('feedback-text').innerText = q.justification;
+            } else {
+                feedbackBox.classList.add('hidden');
+            }
+
+            // Buttons state
+            document.getElementById('btn-prev').disabled = (index === 0);
+            document.getElementById('btn-prev').style.opacity = (index === 0) ? '0.4' : '1';
+
+            document.getElementById('btn-next').disabled = (index === questions.length - 1);
+            document.getElementById('btn-next').style.opacity = (index === questions.length - 1) ? '0.4' : '1';
+
+            const confirmBtn = document.getElementById('btn-confirm');
+            if (isConfirmed[index]) {
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<i class="fa-solid fa-lock mr-2"></i> Confirmado';
+            } else {
+                confirmBtn.disabled = (userAnswers[index] === null);
+                confirmBtn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Confirmar Resposta';
+            }
+
+            renderQuestionsGrid();
+        }
+
+        // OPTION STYLING HELPER
+        function getOptionStyle(qIdx, optIdx) {
+            const confirmed = isConfirmed[qIdx];
+            const selected = userAnswers[qIdx] === optIdx;
+            const correctOpt = questions[qIdx].answer;
+
+            if (confirmed) {
+                if (optIdx === correctOpt) {
+                    return "bg-emerald-100 border-emerald-500 font-semibold shadow-sm";
+                }
+                if (selected && optIdx !== correctOpt) {
+                    return "bg-rose-50 border-rose-400 opacity-90";
+                }
+                return "bg-gray-50 border-gray-200 opacity-60";
+            }
+
+            if (selected) {
+                return "bg-amber-50 border-amber-400 shadow-md font-semibold ring-2 ring-amber-200";
+            }
+
+            return "bg-white border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50";
+        }
+
+        function getLetterBadgeStyle(qIdx, optIdx) {
+            const confirmed = isConfirmed[qIdx];
+            const selected = userAnswers[qIdx] === optIdx;
+            const correctOpt = questions[qIdx].answer;
+
+            if (confirmed) {
+                if (optIdx === correctOpt) return "bg-emerald-600 text-white";
+                if (selected && optIdx !== correctOpt) return "bg-rose-500 text-white";
+                return "bg-gray-200 text-gray-600";
+            }
+
+            if (selected) return "bg-amber-400 text-amber-950 font-bold";
+            return "bg-gray-100 text-gray-600";
+        }
+
+        // USER ACTIONS
+        function selectOption(optIdx) {
+            if (isConfirmed[currentQuestion]) return;
+            userAnswers[currentQuestion] = optIdx;
+            loadQuestion(currentQuestion);
+        }
+
+        function confirmAnswer() {
+            if (userAnswers[currentQuestion] === null || isConfirmed[currentQuestion]) return;
+            
+            isConfirmed[currentQuestion] = true;
+            loadQuestion(currentQuestion);
+            updateProgressSummary();
+        }
+
+        function jumpToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                loadQuestion(currentQuestion + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                loadQuestion(currentQuestion - 1);
+            }
+        }
+
+        function updateProgressSummary() {
+            const confirmedCount = isConfirmed.filter(Boolean).length;
+            document.getElementById('progress-text').innerText = `Respondidas: ${confirmedCount}/20`;
+
+            const btnFinish = document.getElementById('btn-finish');
+            const msgFinish = document.getElementById('finish-msg');
+
+            if (confirmedCount === questions.length) {
+                btnFinish.disabled = false;
+                btnFinish.className = "w-full bg-math-indigo hover:bg-indigo-900 text-white font-title py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transition duration-200 pulse-btn flex items-center justify-center space-x-2 cursor-pointer";
+                msgFinish.innerText = "Perfeito! Você respondeu todas as 20 questões. Clique para ver sua nota!";
+                msgFinish.className = "text-xs text-center text-math-indigo font-bold mt-2";
+            } else {
+                btnFinish.disabled = true;
+                btnFinish.className = "w-full bg-gray-300 text-gray-500 cursor-not-allowed font-title py-3 px-4 rounded-xl shadow flex items-center justify-center space-x-2";
+                msgFinish.innerText = `Faltam ${questions.length - confirmedCount} questão(ões) para liberar a nota.`;
+                msgFinish.className = "text-xs text-center text-gray-400 mt-2";
+            }
+        }
+
+        // RESULTS & DIAGNOSTICS
+        function showResults() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            let correctCount = 0;
+            const topicStats = {};
+
+            questions.forEach((q, idx) => {
+                if (!topicStats[q.topic]) {
+                    topicStats[q.topic] = { total: 0, correct: 0 };
+                }
+                topicStats[q.topic].total++;
+
+                if (userAnswers[idx] === q.answer) {
+                    correctCount++;
+                    topicStats[q.topic].correct++;
+                }
+            });
+
+            const total = questions.length;
+            const incorrectCount = total - correctCount;
+            const percentage = Math.round((correctCount / total) * 100);
+            const grade = ((correctCount / total) * 10).toFixed(1);
+
+            // Populate Cards
+            document.getElementById('res-grade').innerText = grade;
+            document.getElementById('res-correct').innerText = correctCount;
+            document.getElementById('res-incorrect').innerText = incorrectCount;
+            document.getElementById('res-percent').innerText = `${percentage}%`;
+
+            // Badge & Subtitle
+            const badgeIcon = document.getElementById('score-badge-icon');
+            const subtitle = document.getElementById('grade-subtitle');
+
+            if (grade >= 9.0) {
+                badgeIcon.className = "w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-md bg-emerald-100 text-emerald-600";
+                badgeIcon.innerHTML = '<i class="fa-solid fa-trophy"></i>';
+                subtitle.innerText = "Excelente! Seu filho dominou todos os conceitos de Matemática!";
+                confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+            } else if (grade >= 7.0) {
+                badgeIcon.className = "w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-md bg-blue-100 text-blue-600";
+                badgeIcon.innerHTML = '<i class="fa-solid fa-star"></i>';
+                subtitle.innerText = "Muito bem! Bom desempenho na revisão de Matemática.";
+            } else if (grade >= 5.0) {
+                badgeIcon.className = "w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-md bg-amber-100 text-amber-600";
+                badgeIcon.innerHTML = '<i class="fa-solid fa-thumbs-up"></i>';
+                subtitle.innerText = "Bom trabalho! Vale a pena revisar com carinho os pontos com mais erros abaixo.";
+            } else {
+                badgeIcon.className = "w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-md bg-rose-100 text-rose-600";
+                badgeIcon.innerHTML = '<i class="fa-solid fa-book-open"></i>';
+                subtitle.innerText = "Atenção! É recomendável revisar os exercícios das folhas antes do dia da prova.";
+            }
+
+            // Diagnostic Bars
+            const container = document.getElementById('topic-analysis-container');
+            container.innerHTML = '';
+
+            for (const [topic, stat] of Object.entries(topicStats)) {
+                const topicPct = Math.round((stat.correct / stat.total) * 100);
+                
+                let barColor = "bg-emerald-500";
+                let statusText = "Excelente!";
+                let statusBadge = "bg-emerald-100 text-emerald-800";
+
+                if (topicPct < 60) {
+                    barColor = "bg-rose-500";
+                    statusText = "Revisar com Atenção!";
+                    statusBadge = "bg-rose-100 text-rose-800 font-bold";
+                } else if (topicPct < 80) {
+                    barColor = "bg-amber-500";
+                    statusText = "Pode melhorar";
+                    statusBadge = "bg-amber-100 text-amber-800";
+                }
+
+                const itemHtml = `
+                    <div>
+                        <div class="flex justify-between items-center mb-1 text-sm font-bold">
+                            <span class="text-gray-700">${topic} (${stat.correct}/${stat.total} acertos)</span>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full ${statusBadge}">${statusText} - ${topicPct}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                            <div class="${barColor} h-3 rounded-full transition-all duration-500" style="width: ${topicPct}%"></div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += itemHtml;
+            }
+        }
+
+        function restartQuiz() {
+            userAnswers = new Array(questions.length).fill(null);
+            isConfirmed = new Array(questions.length).fill(false);
+            
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+
+            renderQuestionsGrid();
+            loadQuestion(0);
+        }
+    </script>
+</body>
+</html>
